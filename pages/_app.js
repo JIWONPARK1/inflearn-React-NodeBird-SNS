@@ -2,6 +2,7 @@ import "antd/dist/antd.css";
 import PropTypes from "prop-types";
 import Head from "next/head";
 import wrapper from "../store/configureStore";
+import WithReduxSaga from "next-redux-saga";
 
 const Nodebird = ({ Component }) => {
   return (
@@ -19,4 +20,4 @@ Nodebird.propTypes = {
   Component: PropTypes.elementType.isRequired,
 };
 
-export default wrapper.withRedux(Nodebird);
+export default wrapper.withRedux(WithReduxSaga(Nodebird));

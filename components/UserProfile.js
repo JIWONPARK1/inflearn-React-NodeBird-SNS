@@ -1,13 +1,14 @@
 import { Button, Card, Avatar } from "antd";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutAction } from "../reducers/user";
+import { logoutRequestAction } from "../reducers/user";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
+  const { me, logOutLoading } = useSelector((state) => state.user);
 
   const onLogOut = useCallback(() => {
-    dispatch(logoutAction());
+    dispatch(logoutRequestAction());
   }, []);
 
   return (
@@ -16,20 +17,26 @@ const UserProfile = () => {
         <div key="twit">
           게시물수
           <br />
-          10
+          {me.post.length}
         </div>,
         <div key="twit">
           팔로잉수
-          <br />2
+          <br /> {me.Followings.length}
         </div>,
         <div key="twit">
           팔로워수
-          <br />0
+          <br />
+          {me.Followers.length}
         </div>,
       ]}
     >
-      <Card.Meta title="jiwon" avatar={<Avatar>jw</Avatar>} />
-      <Button onClick={onLogOut}>로그아웃</Button>
+      <Card.Meta
+        title={me.nickname}
+        avatar={<Avatar>{me.nickname[0]}</Avatar>}
+      />
+      <Button onClick={onLogOut} loading={logOutLoading}>
+        로그아웃
+      </Button>
     </Card>
   );
 };
