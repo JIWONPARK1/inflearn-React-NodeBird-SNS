@@ -1,7 +1,7 @@
 import { Button, Card, Avatar } from "antd";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutRequestAction } from "../reducers/user";
+// import { logoutRequestAction } from "../reducers/user";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const UserProfile = () => {
         <div key="twit">
           게시물수
           <br />
-          {me.post.length}
+          {me.Posts.length}
         </div>,
         <div key="twit">
           팔로잉수
