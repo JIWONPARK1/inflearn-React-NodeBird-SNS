@@ -1,5 +1,6 @@
-import shortId from "shortid";
-import produce from "immer";
+import shortId from 'shortid';
+import produce from 'immer';
+import faker from 'faker';
 
 export const initialState = {
   mainPosts: [
@@ -7,36 +8,36 @@ export const initialState = {
       id: 1,
       User: {
         id: 1,
-        nickname: "jiwon",
+        nickname: 'jiwon'
       },
-      content: "첫번째 게시글  #해시태그 #익스프레스",
+      content: '첫번째 게시글  #해시태그 #익스프레스',
       Images: [
         {
           id: shortId.generate(),
-          src: "https://placeimg.com/640/480/any",
+          src: 'https://placeimg.com/640/480/any'
         },
         {
           id: shortId.generate(),
-          src: "https://placeimg.com/640/481/any",
+          src: 'https://placeimg.com/640/481/any'
         },
         {
           id: shortId.generate(),
-          src: "https://placeimg.com/640/482/any",
-        },
+          src: 'https://placeimg.com/640/482/any'
+        }
       ],
       Comments: [
         {
           id: shortId.generate(),
           User: {
             id: shortId.generate(),
-            nickname: "jiwonnn",
+            nickname: 'jiwonnn'
           },
-          content: "얼른 사고싶어요!",
-        },
+          content: '얼른 사고싶어요!'
+        }
       ],
       imagePaths: [],
-      postAdded: false,
-    },
+      postAdded: false
+    }
   ],
   imagePaths: [],
   addPostLoading: false,
@@ -47,29 +48,57 @@ export const initialState = {
   addCommentError: false,
   removePostLoading: false,
   removePostDone: false,
-  removePostError: false,
+  removePostError: false
 };
 
-export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
-export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
-export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
+export const generateDummyPost = (number) =>
+  Array(20)
+    .fill()
+    .map(() => ({
+      id: shortId.generate(),
+      User: {
+        id: shortId.generate(),
+        nickname: faker.name.findName()
+      },
+      content: faker.lorem.paragraph(),
+      Images: [
+        {
+          src: faker.image.image()
+        }
+      ],
+      Comments: [
+        {
+          User: {
+            id: shortId.generate(),
+            nickname: faker.name.findName()
+          },
+          content: faker.lorem.sentence()
+        }
+      ]
+    }));
 
-export const REMOVE_POST_REQUEST = "REMOVE_POST_REQUEST";
-export const REMOVE_POST_SUCCESS = "REMOVE_POST_SUCCESS";
-export const REMOVE_POST_FAILURE = "REMOVE_POST_FAILURE";
+initialState.mainPosts = initialState.mainPosts.concat(generateDummyPost(10));
 
-export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
-export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
-export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
+export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
+export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
+export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
+
+export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
+export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
+export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
+
+export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
+export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
+export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
 
 export const addPost = (data) => ({
   type: ADD_POST_REQUEST,
-  data,
+  data
 });
 
 export const addComment = (data) => ({
   type: ADD_COMMENT_REQUEST,
-  data,
+  data
 });
 
 const dummyPost = (data) => ({
@@ -77,10 +106,10 @@ const dummyPost = (data) => ({
   content: data.content,
   User: {
     id: 1,
-    nickname: "won",
+    nickname: 'won'
   },
   Images: [],
-  Comments: [],
+  Comments: []
 });
 
 const dummyComment = (data) => ({
@@ -88,8 +117,8 @@ const dummyComment = (data) => ({
   content: data,
   User: {
     id: 1,
-    nickname: "jiwon",
-  },
+    nickname: 'jiwon'
+  }
 });
 
 const reducer = (state = initialState, action) => {

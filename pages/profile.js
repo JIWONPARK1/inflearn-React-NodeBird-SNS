@@ -1,20 +1,29 @@
-import Head from "next/head";
-import { useSelector } from "react-redux";
-import AppLayout from "../components/Applayout";
-import FollowerList from "../components/FollowerList";
-import FollowList from "../components/FollowList";
-import NicknameEditForm from "../components/NicknameEditForm";
+import Head from 'next/head';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import AppLayout from '../components/Applayout';
+import FollowerList from '../components/FollowerList';
+import FollowList from '../components/FollowList';
+import NicknameEditForm from '../components/NicknameEditForm';
+import Router from 'next/router';
 
 const Profile = () => {
   const { me } = useSelector((state) => state.user);
   const followerList = [
-    { nickname: "한솔" },
-    { nickname: "은혜" },
-    { nickname: "자영" },
-    { nickname: "덕찬" },
+    { nickname: '한솔' },
+    { nickname: '은혜' },
+    { nickname: '자영' },
+    { nickname: '덕찬' }
   ];
-  const followingList = [{ nickname: "동규" }, { nickname: "유림" }];
+  const followingList = [{ nickname: '동규' }, { nickname: '유림' }];
 
+  useEffect(() => {
+    Router.push('/');
+  }, [me && me.id]);
+
+  if (!me) {
+    return null;
+  }
   return (
     <>
       <Head>
