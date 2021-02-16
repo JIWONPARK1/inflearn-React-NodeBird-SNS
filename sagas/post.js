@@ -7,6 +7,9 @@ import {
   ADD_POST_FAILURE,
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
+  LOAD_POST_FAILURE,
+  LOAD_POST_REQUEST,
+  LOAD_POST_SUCCESS,
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
@@ -19,6 +22,22 @@ function addPostAPI() {
 
 function addCommentAPI() {
   return axios.post("/api/comment");
+}
+
+function* loadPost(action) {
+  try {
+    yield delay(1000);
+    const id = shortid.generate();
+    yield put({
+      type: LOAD_POST_SUCCESS,
+      data: generateDun,
+    });
+  } catch (err) {
+    yield put({
+      type: LOAD_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
 }
 
 function* addPost(action) {
@@ -79,6 +98,10 @@ function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 
+function* watchLoadPost() {
+  yield takeLatest(LOAD_POST_REQUEST, loadPost);
+}
+
 function* watchRemovePost() {
   yield takeLatest(REMOVE_POST_REQUEST, removePost);
 }
@@ -88,5 +111,10 @@ function* watchAddComment() {
 }
 
 export default function* postSaga() {
-  yield all([fork(watchAddPost), fork(watchAddComment), fork(watchRemovePost)]);
+  yield all([
+    fork(watchAddPost),
+    fork(watchAddComment),
+    fork(watchRemovePost),
+    fork(watchLoadPost),
+  ]);
 }
