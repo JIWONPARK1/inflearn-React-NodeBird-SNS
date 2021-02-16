@@ -4,20 +4,20 @@ import faker from "faker";
 
 export const initialState = {
   mainPosts: [],
-  hasMorePosts: true,
   imagePaths: [],
+  hasMorePosts: true,
   loadPostsLoading: false,
   loadPostsDone: false,
-  loadPostsError: false,
+  loadPostsError: null,
   addPostLoading: false,
   addPostDone: false,
-  addPostError: false,
-  addCommentLoading: false,
-  addCommentDone: false,
-  addCommentError: false,
+  addPostError: null,
   removePostLoading: false,
   removePostDone: false,
-  removePostError: false,
+  removePostError: null,
+  addCommentLoading: false,
+  addCommentDone: false,
+  addCommentError: null,
 };
 
 export const generateDummyPost = (number) =>
@@ -92,8 +92,8 @@ const dummyComment = (data) => ({
   },
 });
 
-const reducer = (state = initialState, action) => {
-  return produce(state, (draft) => {
+const reducer = (state = initialState, action) =>
+  produce(state, (draft) => {
     switch (action.type) {
       case LOAD_POSTS_REQUEST:
         draft.loadPostsLoading = true;
@@ -172,6 +172,4 @@ const reducer = (state = initialState, action) => {
         break;
     }
   });
-};
-
 export default reducer;
