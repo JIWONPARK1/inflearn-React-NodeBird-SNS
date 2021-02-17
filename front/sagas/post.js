@@ -7,7 +7,7 @@ import {
   takeLatest,
   throttle,
 } from "redux-saga/effects";
-import shortid from "shortid";
+import axios from "axios";
 import {
   ADD_COMMENT_FAILURE,
   ADD_COMMENT_REQUEST,
@@ -88,7 +88,7 @@ function* removePost(action) {
 
 function* addComment(action) {
   try {
-    const result = yield call(addCommentAPI);
+    const result = yield call(addCommentAPI, action.data);
     yield put({
       type: ADD_COMMENT_SUCCESS,
       data: result.data,
