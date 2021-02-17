@@ -1,15 +1,18 @@
 import Link from "next/link";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import styled from "styled-components";
 import useInput from "../hooks/useInput";
-import PropTypes from "prop-types";
 import { loginRequestAction } from "../reducers/user";
 import { Button, Form, Input } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 
+const FormWrapper = styled(Form)`
+  padding: 15px;
+`;
+
 const LoginForm = () => {
   const dispatch = useDispatch();
-  const { logOutLoading } = useSelector((state) => state.user);
+  const { logOutLoading, logInError } = useSelector((state) => state.user);
   const [email, onChangeEmail] = useInput("");
   const [password, onChangePassword] = useInput("");
 
@@ -17,33 +20,39 @@ const LoginForm = () => {
     margin-top: 10px;
   `;
 
-  const FormWrapper = styled(Form)`
-    padding: 15px;
-  `;
+  const onSubmitForm = useCallback(() => {
+    dispatch(loginRequestAction({ email, password }));
+  }, [email, password]);
 
-  const onSubmitForm = useCallback(
-    (e) => {
-      dispatch(loginRequestAction({ email, password }));
-    },
-    [email, password]
-  );
+  useEffect(() => {
+    if (logInError) {
+      alert(logInError);
+    }
+  }, [logInError]);
 
   return (
     <FormWrapper onFinish={onSubmitForm}>
       <div>
         <label htmlFor="user-email">이메일</label>
         <br />
-        <Input name="user-email" value={email} onChange={onChangeEmail}></Input>
+        <Input
+          name="user-email"
+          type="email"
+          value={email}
+          onChange={onChangeEmail}
+          required
+        />
       </div>
       <div>
         <label htmlFor="user-password">비밀번호</label>
         <br />
         <Input
           name="user-password"
-          value={password}
           type="password"
+          value={password}
           onChange={onChangePassword}
-        ></Input>
+          required
+        />
       </div>
       <ButtonWrapper>
         <Button type="primary" htmlType="submit" loading={logOutLoading}>

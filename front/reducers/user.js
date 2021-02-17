@@ -63,19 +63,6 @@ export const logoutRequestAction = () => {
   };
 };
 
-const dummyUser = (data) => ({
-  ...data,
-  nickname: "jiwon",
-  id: 1,
-  Posts: [{ id: 1 }],
-  Followings: [
-    { nickname: "한솔" },
-    { nickname: "은혜" },
-    { nickname: "덕찬" },
-  ],
-  Followers: [{ nickname: "자영" }, { nickname: "유림" }, { nickname: "홍남" }],
-});
-
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
@@ -88,7 +75,7 @@ const reducer = (state = initialState, action) => {
       case LOG_IN_SUCCESS:
         draft.logInLoading = false;
         draft.logInDone = true;
-        draft.me = dummyUser(action.data);
+        draft.me = action.data;
         break;
 
       case LOG_IN_FAILURE:

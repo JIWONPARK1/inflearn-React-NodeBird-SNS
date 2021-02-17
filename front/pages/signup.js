@@ -1,19 +1,23 @@
 import Head from "next/head";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import AppLayout from "../components/Applayout";
 import { Button, Form, Input, Checkbox } from "antd";
 import useInput from "../hooks/useInput";
 import { useDispatch, useSelector } from "react-redux";
+import { SIGN_UP_REQUEST } from "../reducers/user";
+import Router from "next/router";
 
 const Signup = () => {
   const dispatch = useDispatch();
-  const { signUpLoading } = useSelector((state) => state.user);
+  const { signUpLoading, signUpDone, signUpError, me } = useSelector(
+    (state) => state.user
+  );
 
-  const [email, onChangeEmail] = useInput("");
-  const [nickname, onChangeNickname] = useInput("");
-  const [password, onChangePassword] = useInput("");
-  const [passwordCheck, setPasswordCheck] = useState("");
+  const [email, onChangeEmail] = useInput("jiwon@gmail.com");
+  const [nickname, onChangeNickname] = useInput("jiwon");
+  const [password, onChangePassword] = useInput("wldnjs92");
+  const [passwordCheck, setPasswordCheck] = useState("wldnjs92");
   const [passwordError, setPasswordError] = useState(false);
   const [term, setTerm] = useState("");
   const [termError, setTermError] = useState(false);
@@ -55,6 +59,24 @@ const Signup = () => {
     });
   }, [email, password, passwordCheck, term]);
 
+  useEffect(() => {
+    if (signUpDone) {
+      Router.replace("/");
+    }
+  }, [signUpDone]);
+
+  useEffect(() => {
+    if (me && me.id) {
+      Router.replace("/");
+    }
+  }, [me && me.id]);
+
+  useEffect(() => {
+    if (signUpError) {
+      alert(signUpError);
+    }
+  }, [signUpError]);
+
   return (
     <AppLayout>
       <Head>
@@ -88,7 +110,7 @@ const Signup = () => {
           <br />
           <Input
             required
-            type={password}
+            type="password"
             value={password}
             name="user-password"
             onChange={onChangePassword}
@@ -99,7 +121,7 @@ const Signup = () => {
           <br />
           <Input
             required
-            type={password}
+            type="password"
             name="user-passwordCheck"
             value={passwordCheck}
             onChange={onChangePasswordCheck}
