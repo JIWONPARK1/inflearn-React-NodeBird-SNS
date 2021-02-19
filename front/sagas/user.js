@@ -1,6 +1,9 @@
 import { all, call, delay, fork, put, takeLatest } from "redux-saga/effects";
 import axios from "axios";
 import {
+  CHANGE_NICKNAME_FAILURE,
+  CHANGE_NICKNAME_REQUEST,
+  CHANGE_NICKNAME_SUCCESS,
   FOLLOW_FAILURE,
   FOLLOW_REQUEST,
   FOLLOW_SUCCESS,
@@ -21,20 +24,11 @@ import {
   UNFOLLOW_SUCCESS,
 } from "../reducers/user";
 
+/**
+ *자동로그인
+ */
 function loadMyInfoAPI(data) {
   return axios.get("/user");
-}
-
-function logInAPI(data) {
-  return axios.post("/user/login", data);
-}
-
-function signUpAPI(data) {
-  return axios.post("/user", data);
-}
-
-function logOutAPI() {
-  return axios.post("/user/logout");
 }
 
 function* loadMyInfo(action) {
@@ -53,6 +47,14 @@ function* loadMyInfo(action) {
   }
 }
 
+/**
+ *로그인
+ */
+
+function logInAPI(data) {
+  return axios.post("/user/login", data);
+}
+
 function* logIn(action) {
   try {
     const result = yield call(logInAPI, action.data);
@@ -67,6 +69,13 @@ function* logIn(action) {
       error: err.response.data,
     });
   }
+}
+/**
+ * 로그아웃
+ */
+
+function logOutAPI() {
+  return axios.post("/user/logout");
 }
 
 function* logOut(action) {
@@ -84,6 +93,14 @@ function* logOut(action) {
   }
 }
 
+/**
+ * 회원가입
+ */
+
+function signUpAPI(data) {
+  return axios.post("/user", data);
+}
+
 function* signUp(action) {
   try {
     yield call(signUpAPI, action.data);
@@ -98,6 +115,10 @@ function* signUp(action) {
     });
   }
 }
+
+/**
+ * 팔로우
+ */
 
 function* follow(action) {
   try {
@@ -114,6 +135,10 @@ function* follow(action) {
   }
 }
 
+/**
+ * 언팔로우
+ */
+
 function* unfollow(action) {
   try {
     yield delay(1000);
@@ -124,6 +149,29 @@ function* unfollow(action) {
   } catch (err) {
     yield put({
       type: UNFOLLOW_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+/**
+ * 닉네임 변경
+ */
+
+function changeNicknameAPI(nickname) {
+  return axios.patch("/user/nickname", { nickname });
+}
+
+function* changeNickname(action) {
+  try {
+    const result = yield call(changeNicknameAPI, action.data);
+    yield put({
+      type: CHANGE_NICKNAME_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: CHANGE_NICKNAME_FAILURE,
       error: err.response.data,
     });
   }
@@ -153,6 +201,10 @@ function* watchUnfollow() {
   yield takeLatest(UNFOLLOW_REQUEST, unfollow);
 }
 
+function* watchChangeNickname() {
+  yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname);
+}
+
 export default function* userSaga() {
   yield all([
     fork(watchLoadUser),
@@ -161,5 +213,6 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchFollow),
     fork(watchUnfollow),
+    fork(watchChangeNickname),
   ]);
 }

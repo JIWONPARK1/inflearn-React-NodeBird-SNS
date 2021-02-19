@@ -30,29 +30,13 @@ import {
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
-function addPostAPI(content) {
-  return axios.post("/post", { content });
-}
+/**
+ * 게시글 목록 조회
+ */
 
 function loadPostsAPI() {
   return axios.get("/posts");
 }
-
-function addCommentAPI(data) {
-  return axios.post(`/post/${data.postId}/comment`, data);
-}
-
-function likePostApi(data) {
-  return axios.patch(`/post/${data}/like`);
-}
-
-function unlikePostApi(data) {
-  return axios.delete(`/post/${data}/like`);
-}
-
-/**
- * 게시글
- */
 
 function* loadPosts() {
   try {
@@ -67,6 +51,13 @@ function* loadPosts() {
       error: err.response.data,
     });
   }
+}
+
+/**
+ * 게시글 등록
+ */
+function addPostAPI(content) {
+  return axios.post("/post", { content });
 }
 
 function* addPost(action) {
@@ -88,12 +79,20 @@ function* addPost(action) {
   }
 }
 
+/**
+ * 게시글 삭제
+ */
+
+function removePostAPI(postId) {
+  return axios.delete(`/post/${postId}`);
+}
+
 function* removePost(action) {
   try {
-    yield delay(1000);
+    const result = yield call(removePostAPI, action.data);
     yield put({
       type: REMOVE_POST_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
     yield put({
       type: REMOVE_POST_OF_ME,
@@ -105,6 +104,14 @@ function* removePost(action) {
       error: err.response.data,
     });
   }
+}
+
+/**
+ * 게시글 좋아요
+ */
+
+function likePostApi(data) {
+  return axios.patch(`/post/${data}/like`);
 }
 
 function* likePost(action) {
@@ -121,6 +128,13 @@ function* likePost(action) {
       error: err.response.data,
     });
   }
+}
+
+/**
+ * 게시글 좋아요 취소
+ */
+function unlikePostApi(data) {
+  return axios.delete(`/post/${data}/like`);
 }
 
 function* unlikePost(action) {
@@ -140,8 +154,13 @@ function* unlikePost(action) {
 }
 
 /**
- * 댓글
+ * 댓글 등록
  */
+
+function addCommentAPI(data) {
+  return axios.post(`/post/${data.postId}/comment`, data);
+}
+
 function* addComment(action) {
   try {
     const result = yield call(addCommentAPI, action.data);
