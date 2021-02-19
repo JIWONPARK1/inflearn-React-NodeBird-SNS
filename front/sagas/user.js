@@ -120,14 +120,19 @@ function* signUp(action) {
  * 팔로우
  */
 
+function followAPI(userId) {
+  return axios.patch(`/user/${userId}/follow`);
+}
+
 function* follow(action) {
   try {
-    yield delay(1000);
+    const result = yield call(followAPI, action.data);
     yield put({
       type: FOLLOW_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err) {
+    console.error(err);
     yield put({
       type: FOLLOW_FAILURE,
       error: err.response.data,
@@ -139,12 +144,16 @@ function* follow(action) {
  * 언팔로우
  */
 
+function unfollowAPI(userId) {
+  return axios.delete(`/user/${userId}/follow`);
+}
+
 function* unfollow(action) {
   try {
-    yield delay(1000);
+    const result = yield call(unfollowAPI, action.data);
     yield put({
       type: UNFOLLOW_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err) {
     yield put({

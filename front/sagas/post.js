@@ -28,7 +28,11 @@ import {
   UNLIKE_POST_REQUEST,
   UNLIKE_POST_SUCCESS,
 } from "../reducers/post";
-import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
+import {
+  ADD_POST_TO_ME,
+  FOLLOW_FAILURE,
+  REMOVE_POST_OF_ME,
+} from "../reducers/user";
 
 /**
  * 게시글 목록 조회
