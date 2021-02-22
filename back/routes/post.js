@@ -140,4 +140,11 @@ router.delete("/:postId", isLoggedIn, async (req, res, next) => {
   }
 });
 
+/**
+ * 게시글 이미지업로드
+ */
+// router.post('/images',(req,res,next) => {
+
+// })
+
 module.exports = router;

@@ -11,13 +11,9 @@ const router = express.Router();
  */
 
 router.get("/", async (req, res, next) => {
+  console.log(req.headers);
   try {
     if (req.user) {
-      const user = await User.findOne({
-        where: {
-          id: req.user.id,
-        },
-      });
       const fullUserWithoutPassword = await User.findOne({
         where: { id: req.user.id },
         attributes: {
@@ -212,6 +208,49 @@ router.delete("/:userId/follow", isLoggedIn, async (req, res, next) => {
   } catch (err) {
     console.error(err);
     next(err);
+  }
+});
+
+/**
+ * 내정보 가져오기
+ */
+
+router.get("/:id", async (req, res, next) => {
+  try {
+    const fullUserWithoutPassword = await User.findOne({
+      where: { id: req.params.id },
+      attributes: {
+        exclude: ["password"],
+      },
+      include: [
+        {
+          model: Post,
+          attributes: ["id"],
+        },
+        {
+          model: User,
+          as: "Followings",
+          attributes: ["id"],
+        },
+        {
+          model: User,
+          as: "Followers",
+          attributes: ["id"],
+        },
+      ],
+    });
+    if (fullUserWithoutPassword) {
+      const data = fullUserWithoutPassword.toJSON();
+      data.Posts = data.Posts.length;
+      data.Followings = data.Followings.length;
+      data.Followers = data.Followers.length;
+      res.status(200).json(data);
+    } else {
+      res.status(404).json("존재하지 않는 사용자입니다.");
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 });
 
