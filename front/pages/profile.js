@@ -8,9 +8,10 @@ import NicknameEditForm from "../components/NicknameEditForm";
 import wrapper from "../store/configureStore";
 import { END } from "redux-saga";
 import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
+import { useEffect } from "react";
 
 const Profile = () => {
-  const { userInfo, me } = useSelector((state) => state.user);
+  const { me } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (!me && me.id) {
@@ -24,13 +25,11 @@ const Profile = () => {
         <meta charSet="utf-8" />
         <title>프로필 | noed bird</title>
       </Head>
-      {userInfo ? (
-        <AppLayout>
-          <NicknameEditForm />
-          <FollowList header="팔로잉" data={me.FollowList} />
-          <FollowList header="팔로워" data={me.FollowerList} />
-        </AppLayout>
-      ) : null}
+      <AppLayout>
+        <NicknameEditForm />
+        <FollowList header="팔로잉" data={me.FollowList} />
+        <FollowerList header="팔로워" data={me.FollowerList} />
+      </AppLayout>
     </>
   );
 };

@@ -45,6 +45,67 @@ router.post("/", isLoggedIn, async (req, res, next) => {
 });
 
 /**
+ * 게시글 상세조회
+ */
+router.get("/:postId", async (req, res, next) => {
+  try {
+    const post = await Post.findOne({
+      where: { id: req.params.postId },
+    });
+    if (!post) {
+      return res.status(403).send("존재하지 않는 게시글 입니다.");
+    }
+
+    const fullPost = await Post.findOne({
+      where: {
+        id: post.id,
+      },
+      include: [
+        {
+          model: Post,
+          as: "Retweet",
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+            {
+              model: Image,
+            },
+          ],
+        },
+        {
+          model: Image,
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+        {
+          model: User,
+          attributes: ["id", "nickname"],
+        },
+        {
+          model: User,
+          attributes: ["id"],
+          as: "Likers",
+        },
+      ],
+    });
+
+    res.status(200).json(fullPost);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+/**
  * 댓글 작성
  */
 router.post(`/:postId/comment`, isLoggedIn, async (req, res, next) => {
